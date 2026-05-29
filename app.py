@@ -136,33 +136,33 @@ if nf_file and pedido_file:
         melhor = None
         maior_score = 0
 
-    for _, ped in df_pedido.iterrows():
+        for _, ped in df_pedido.iterrows():
 
-        score = 0
+            score = 0
 
-        # QUANTIDADE
-        if abs(nf["qtd"] - ped["qtd"]) < 0.01:
-            score += 25
+            # QUANTIDADE
+            if abs(nf["qtd"] - ped["qtd"]) < 0.01:
+                score += 25
 
-        # UNITÁRIO
-        if abs(nf["unit"] - ped["unit"]) < 0.05:
-            score += 25
+            # UNITÁRIO
+            if abs(nf["unit"] - ped["unit"]) < 0.05:
+                score += 25
 
-        # TOTAL
-        if abs(nf["total"] - ped["total"]) < 0.05:
-            score += 30
+            # TOTAL
+            if abs(nf["total"] - ped["total"]) < 0.05:
+                score += 30
 
-        # SIMILARIDADE DA DESCRIÇÃO
-        similaridade = fuzz.token_sort_ratio(
-            str(nf["descricao_nf"]),
-            str(ped["descricao_pedido"])
-        )
+            # SIMILARIDADE DA DESCRIÇÃO
+            similaridade = fuzz.token_sort_ratio(
+                str(nf["descricao_nf"]),
+                str(ped["descricao_pedido"])
+            )
 
-        score += similaridade * 0.2
+            score += similaridade * 0.2
 
-        if score > maior_score:
-            maior_score = score
-            melhor = ped
+            if score > maior_score:
+                maior_score = score
+                melhor = ped
 
         if melhor is not None and maior_score > 0:
 
@@ -173,7 +173,7 @@ if nf_file and pedido_file:
                 "QTD": nf["qtd"],
                 "UNITÁRIO": nf["unit"],
                 "TOTAL": nf["total"],
-                "STATUS": f"{maior_score}%"
+                "STATUS": f"{round(maior_score)}%"
             })
 
     df_resultado = pd.DataFrame(resultado)
