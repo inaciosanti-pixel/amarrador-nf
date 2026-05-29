@@ -1,4 +1,3 @@
-```python
 import streamlit as st
 import pandas as pd
 import pdfplumber
@@ -24,10 +23,6 @@ O sistema irá:
 - gerar tabela final
 """)
 
-# =========================
-# UPLOADS
-# =========================
-
 nf_file = st.file_uploader(
     "Upload Nota Fiscal PDF",
     type=["pdf"]
@@ -38,10 +33,6 @@ pedido_file = st.file_uploader(
     type=["pdf"]
 )
 
-# =========================
-# PROCESSAMENTO
-# =========================
-
 if nf_file and pedido_file:
 
     st.success("Arquivos carregados com sucesso.")
@@ -49,29 +40,17 @@ if nf_file and pedido_file:
     texto_nf = ""
     texto_pedido = ""
 
-    # =========================
-    # LER NF
-    # =========================
-
     with pdfplumber.open(nf_file) as pdf:
         for p in pdf.pages:
             txt = p.extract_text()
             if txt:
                 texto_nf += txt
 
-    # =========================
-    # LER PEDIDO
-    # =========================
-
     with pdfplumber.open(pedido_file) as pdf:
         for p in pdf.pages:
             txt = p.extract_text()
             if txt:
                 texto_pedido += txt
-
-    # =========================
-    # EXTRAIR NF
-    # =========================
 
     linhas_nf = texto_nf.split("\n")
 
@@ -95,10 +74,6 @@ if nf_file and pedido_file:
             })
 
     df_nf = pd.DataFrame(itens_nf)
-
-    # =========================
-    # EXTRAIR PEDIDO
-    # =========================
 
     linhas_pedido = texto_pedido.split("\n")
 
@@ -153,10 +128,6 @@ if nf_file and pedido_file:
 
     df_pedido = pd.DataFrame(itens_pedido)
 
-    # =========================
-    # AMARRAÇÃO
-    # =========================
-
     resultado = []
 
     for _, nf in df_nf.iterrows():
@@ -195,10 +166,6 @@ if nf_file and pedido_file:
 
     df_resultado = pd.DataFrame(resultado)
 
-    # =========================
-    # EXIBIR RESULTADO
-    # =========================
-
     st.subheader("Resultado da Amarração")
 
     st.dataframe(
@@ -206,17 +173,13 @@ if nf_file and pedido_file:
         use_container_width=True
     )
 
-    # =========================
-    # DOWNLOAD EXCEL
-    # =========================
-
     output = BytesIO()
 
-    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+    with pd.ExcelWriter(output, engine="openpyxl") as writer:
         df_resultado.to_excel(
             writer,
             index=False,
-            sheet_name='Amarracao'
+            sheet_name="Amarracao"
         )
 
     excel_data = output.getvalue()
@@ -227,4 +190,3 @@ if nf_file and pedido_file:
         file_name="amarracao.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
-```
