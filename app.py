@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import pdfplumber
 import re
+from rapidfuzz import fuzz
 from io import BytesIO
 
 st.set_page_config(
@@ -139,14 +140,25 @@ if nf_file and pedido_file:
 
             score = 0
 
-            if abs(nf["qtd"] - ped["qtd"]) < 0.01:
-                score += 30
+# QUANTIDADE
+if abs(nf["qtd"] - ped["qtd"]) < 0.01:
+    score += 25
 
-            if abs(nf["unit"] - ped["unit"]) < 0.01:
-                score += 30
+# UNITÁRIO
+if abs(nf["unit"] - ped["unit"]) < 0.05:
+    score += 25
 
-            if abs(nf["total"] - ped["total"]) < 0.01:
-                score += 40
+# TOTAL
+if abs(nf["total"] - ped["total"]) < 0.05:
+    score += 30
+
+# SIMILARIDADE DA DESCRIÇÃO
+similaridade = fuzz.token_sort_ratio(
+    str(nf["descricao_nf"]),
+    str(ped["descricao_pedido"])
+)
+
+score += similaridade * 0.2
 
             if score > maior_score:
                 maior_score = score
