@@ -160,9 +160,9 @@ similaridade = fuzz.token_sort_ratio(
 
 score += similaridade * 0.2
 
-            if score > maior_score:
-                maior_score = score
-                melhor = ped
+if score > maior_score:
+    maior_score = score
+    melhor = ped
 
         if melhor is not None and maior_score > 0:
 
