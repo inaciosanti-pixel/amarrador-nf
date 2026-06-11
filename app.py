@@ -87,6 +87,12 @@ if nf_file and pedido_file:
 
     linhas_pedido = texto_pedido.split("\n")
 
+    st.subheader("Linhas contendo EMV")
+
+    for linha in linhas_pedido:
+    if "EMV-" in linha:
+        st.write(linha)
+
     itens_pedido = []
 
     for i, linha in enumerate(linhas_pedido):
