@@ -121,29 +121,31 @@ if nf_file and pedido_file:
                     ):
                         descricao += " " + prox.strip()
 
-                bloco = " ".join(linhas_pedido[i:i+30])
+                bloco = " ".join(linhas_pedido[i:i+20])
 
                 numeros = re.findall(r'(\d+,\d+)', bloco)
 
-                st.write("EMV encontrado:", cod)
-                st.write("Números encontrados:", numeros)
+                st.write("Bloco analisado:")
+                st.text(bloco)
 
-                if len(numeros) >= 3:
+                st.write("Numeros:")
+                st.write(numeros)
 
-                    qtd = float(numeros[0].replace(",", "."))
-                    unit = float(numeros[1].replace(",", "."))
-                    total = float(numeros[-1].replace(",", "."))
-
+                   qtd = 0
+                   unit = 0
+                   total = 0
+                
                     itens_pedido.append({
                         "cod_pedido": cod,
                         "descricao_pedido": descricao,
                         "qtd": qtd,
                         "unit": unit,
                         "total": total
+                        })
                     })
 
-            except:
-                pass
+            except Exception as e:
+                st.error(f"Erro: {e}")
 
     df_pedido = pd.DataFrame(itens_pedido)
 
