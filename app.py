@@ -203,7 +203,6 @@ if nf_file and pedido_file:
                 similaridade
             )
 
-score += similaridade * 0.2
             score += similaridade * 0.2
 
             if score > maior_score:
