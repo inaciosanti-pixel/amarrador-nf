@@ -121,9 +121,12 @@ if nf_file and pedido_file:
                     ):
                         descricao += " " + prox.strip()
 
-                bloco = " ".join(linhas_pedido[i:i+6])
+                bloco = " ".join(linhas_pedido[i:i+30])
 
                 numeros = re.findall(r'(\d+,\d+)', bloco)
+
+                st.write("EMV encontrado:", cod)
+                st.write("Números encontrados:", numeros)
 
                 if len(numeros) >= 3:
 
