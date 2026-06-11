@@ -147,6 +147,11 @@ if nf_file and pedido_file:
 
     df_pedido = pd.DataFrame(itens_pedido)
 
+    st.subheader("Pedido Extraído")
+
+    for item in itens_pedido:
+        st.json(item)
+
     st.write("Itens encontrados no Pedido:", len(df_pedido))
     st.dataframe(df_pedido)
 
