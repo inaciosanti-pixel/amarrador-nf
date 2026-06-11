@@ -142,7 +142,6 @@ st.code(bloco)
                     "unit": unit,
                     "total": total
                 })
-                    })
 
             except Exception as e:
                 st.error(f"Erro: {e}")
