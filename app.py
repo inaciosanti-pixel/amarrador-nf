@@ -131,17 +131,17 @@ st.code(bloco)
                 st.write("Numeros:")
                 st.write(numeros)
 
-                qtd = 0
-                unit = 0
-                total = 0
-                
-                itens_pedido.append({
-                    "cod_pedido": cod,
-                    "descricao_pedido": descricao,
-                    "qtd": qtd,
-                    "unit": unit,
-                    "total": total
-                })
+qtd = 0
+unit = 0
+total = 0
+
+itens_pedido.append({
+    "cod_pedido": cod,
+    "descricao_pedido": descricao,
+    "qtd": qtd,
+    "unit": unit,
+    "total": total
+})
 
             except Exception as e:
                 st.error(f"Erro: {e}")
