@@ -189,22 +189,40 @@ if nf_file and pedido_file:
             if abs(nf["total"] - ped["total"]) < 0.05:
                 score += 30
 
-            # SIMILARIDADE DA DESCRIÇÃO
-            similaridade = fuzz.token_sort_ratio(
-                str(nf["descricao_nf"]),
-                str(ped["descricao_pedido"])
-            )
+           for _, ped in df_pedido.iterrows():
 
-            st.write(
-                nf["descricao_nf"],
-                " --> ",
-                ped["descricao_pedido"],
-                " = ",
-                similaridade
-            )
+                if ped["cod_pedido"] in pedidos_usados:
+                    continue
 
-score += similaridade * 0.2
-            score += similaridade * 0.2
+                score = 0
+
+                # QUANTIDADE
+                if abs(nf["qtd"] - ped["qtd"]) < 0.01:
+                    score += 25
+            
+                # UNITÁRIO
+                if abs(nf["unit"] - ped["unit"]) < 0.05:
+                    score += 25
+
+                # TOTAL
+                if abs(nf["total"] - ped["total"]) < 0.05:
+                    score += 30
+
+                # SIMILARIDADE DA DESCRIÇÃO
+                similaridade = fuzz.token_sort_ratio(
+                    str(nf["descricao_nf"]),
+                    str(ped["descricao_pedido"])
+                )
+
+                st.write(
+                    f'{nf["descricao_nf"]} --> {ped["descricao_pedido"]} = {similaridade}'
+                )
+
+                score += similaridade * 0.2
+
+                if score > maior_score:
+                    maior_score = score
+                    melhor = ped
 
             if score > maior_score:
                 maior_score = score
