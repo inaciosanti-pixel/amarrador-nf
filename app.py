@@ -52,12 +52,6 @@ if nf_file and pedido_file:
             txt = p.extract_text()
             if txt:
                 texto_pedido += txt
-                
-    st.subheader("Texto extraído da NF")
-    st.text(texto_nf[:5000])
-
-    st.subheader("Texto extraído do Pedido")
-    st.text(texto_pedido[:5000])
 
     linhas_nf = texto_nf.split("\n")
 
@@ -86,8 +80,6 @@ if nf_file and pedido_file:
     st.dataframe(df_nf)
 
     linhas_pedido = texto_pedido.split("\n")
-
-    st.subheader("Linhas contendo EMV")
 
     for linha in linhas_pedido:
         if "EMV-" in linha:
@@ -123,17 +115,28 @@ if nf_file and pedido_file:
 
                 bloco = "\n".join(linhas_pedido[i:i+20])
 
-                numeros = re.findall(r'(\d+,\d+)', bloco)
+                padrao_item = re.search(
+                    r'(\d+,\d+)UN\s+(\d+,\d+)',
+                    bloco
+                )
 
-                st.write("Bloco analisado:")
-                st.code(bloco)
+                if padrao_item:
 
-                st.write("Numeros:")
-                st.write(numeros)
+                    qtd = float(
+                        padrao_item.group(1).replace(",", ".")
+                    )
 
-                qtd = 0
-                unit = 0
-                total = 0
+                    unit = float(
+                        padrao_item.group(2).replace(",", ".")
+                    )
+
+                    total = round(qtd * unit, 2)
+
+                else:
+
+                    qtd = 0
+                    unit = 0
+                    total = 0
 
                 itens_pedido.append({
                     "cod_pedido": cod,
@@ -158,6 +161,12 @@ if nf_file and pedido_file:
 
     resultado = []
 
+    pedidos_usados = set()
+
+    st.write("Iniciando amarração...")
+
+    pedidos_usados = set()    
+       
     st.write("Iniciando amarração...")
 
     for _, nf in df_nf.iterrows():
@@ -166,6 +175,9 @@ if nf_file and pedido_file:
         maior_score = 0
 
         for _, ped in df_pedido.iterrows():
+            
+            if ped["cod_pedido"] in pedidos_usados:
+                continue
 
             score = 0
 
@@ -185,6 +197,13 @@ if nf_file and pedido_file:
             similaridade = fuzz.token_sort_ratio(
                 str(nf["descricao_nf"]),
                 str(ped["descricao_pedido"])
+                st.write(
+                    nf["descricao_nf"],
+                    " --> ",
+                    ped["descricao_pedido"],
+                    " = ",
+                    similaridade
+                )
             )
 
             score += similaridade * 0.2
@@ -195,6 +214,8 @@ if nf_file and pedido_file:
 
         if melhor is not None and maior_score > 0:
 
+            pedidos_usados.add(melhor["cod_pedido"])
+            
             resultado.append({
                 "COD NF": nf["cod_nf"],
                 "COD PEDIDO": melhor["cod_pedido"],
