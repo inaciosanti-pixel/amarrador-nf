@@ -121,27 +121,27 @@ if nf_file and pedido_file:
                     ):
                         descricao += " " + prox.strip()
 
-                bloco = " ".join(linhas_pedido[i:i+20])
+                bloco = "\n".join(linhas_pedido[i:i+20])
 
                 numeros = re.findall(r'(\d+,\d+)', bloco)
 
-                st.write("Bloco analisado:")
-                st.text(bloco)
+st.write("Bloco analisado:")
+st.code(bloco)
 
                 st.write("Numeros:")
                 st.write(numeros)
 
-                   qtd = 0
-                   unit = 0
-                   total = 0
+                qtd = 0
+                unit = 0
+                total = 0
                 
-                    itens_pedido.append({
-                        "cod_pedido": cod,
-                        "descricao_pedido": descricao,
-                        "qtd": qtd,
-                        "unit": unit,
-                        "total": total
-                        })
+                itens_pedido.append({
+                    "cod_pedido": cod,
+                    "descricao_pedido": descricao,
+                    "qtd": qtd,
+                    "unit": unit,
+                    "total": total
+                })
                     })
 
             except Exception as e:
