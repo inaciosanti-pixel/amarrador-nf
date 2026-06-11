@@ -90,8 +90,8 @@ if nf_file and pedido_file:
     st.subheader("Linhas contendo EMV")
 
     for linha in linhas_pedido:
-    if "EMV-" in linha:
-        st.write(linha)
+        if "EMV-" in linha:
+            st.write(linha)
 
     itens_pedido = []
 
