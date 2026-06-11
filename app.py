@@ -52,6 +52,12 @@ if nf_file and pedido_file:
             txt = p.extract_text()
             if txt:
                 texto_pedido += txt
+                
+    st.subheader("Texto extraído da NF")
+    st.text(texto_nf[:5000])
+
+    st.subheader("Texto extraído do Pedido")
+    st.text(texto_pedido[:5000])
 
     linhas_nf = texto_nf.split("\n")
 
@@ -75,6 +81,9 @@ if nf_file and pedido_file:
             })
 
     df_nf = pd.DataFrame(itens_nf)
+
+    st.write("Itens encontrados na NF:", len(df_nf))
+    st.dataframe(df_nf)
 
     linhas_pedido = texto_pedido.split("\n")
 
@@ -129,7 +138,12 @@ if nf_file and pedido_file:
 
     df_pedido = pd.DataFrame(itens_pedido)
 
+    st.write("Itens encontrados no Pedido:", len(df_pedido))
+    st.dataframe(df_pedido)
+
     resultado = []
+
+    st.write("Iniciando amarração...")
 
     for _, nf in df_nf.iterrows():
 
@@ -177,6 +191,8 @@ if nf_file and pedido_file:
             })
 
     df_resultado = pd.DataFrame(resultado)
+
+    st.write("Amarrações encontradas:", len(df_resultado))
 
     st.subheader("Resultado da Amarração")
 
