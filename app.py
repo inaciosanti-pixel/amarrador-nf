@@ -189,107 +189,28 @@ if nf_file and pedido_file:
             if abs(nf["total"] - ped["total"]) < 0.05:
                 score += 30
 
-           st.write("Iniciando amarração...")
+            # SIMILARIDADE DA DESCRIÇÃO
+            similaridade = fuzz.token_sort_ratio(
+                str(nf["descricao_nf"]),
+                str(ped["descricao_pedido"])
+            )
 
-    for _, nf in df_nf.iterrows():
+            st.write(
+                nf["descricao_nf"],
+                " --> ",
+                ped["descricao_pedido"],
+                " = ",
+                similaridade
+            )
 
-        melhor = None
-        maior_score = 0
-
-        for _, ped in df_pedido.iterrows():
-            
-            if ped["cod_pedido"] in pedidos_usados:
-                continue
-
-            score = 0
-
-            # QUANTIDADE
-            if abs(nf["qtd"] - ped["qtd"]) < 0.01:
-                score += 25
-
-            # UNITÁRIO
-            if abs(nf["unit"] - ped["unit"]) < 0.05:
-                score += 25
-
-            # TOTAL
-            if abs(nf["total"] - ped["total"]) < 0.05:
-                score += 30
-
-           for _, ped in df_pedido.iterrows():
-
-                if ped["cod_pedido"] in pedidos_usados:
-                    continue
-
-                score = 0
-
-                # QUANTIDADE
-                if abs(nf["qtd"] - ped["qtd"]) < 0.01:
-                    score += 25
-            
-                # UNITÁRIO
-                if abs(nf["unit"] - ped["unit"]) < 0.05:
-                    score += 25
-
-                # TOTAL
-                if abs(nf["total"] - ped["total"]) < 0.05:
-                    score += 30
-
-                # SIMILARIDADE DA DESCRIÇÃO
-                similaridade = fuzz.token_sort_ratio(
-                    str(nf["descricao_nf"]),
-                    str(ped["descricao_pedido"])
-                )
-
-                st.write(
-                    f'{nf["descricao_nf"]} --> {ped["descricao_pedido"]} = {similaridade}'
-                )
-
-                score += similaridade * 0.2
-
-                if score > maior_score:
-                    maior_score = score
-                    melhor = ped
+score += similaridade * 0.2
+            score += similaridade * 0.2
 
             if score > maior_score:
                 maior_score = score
                 melhor = ped
 
         if melhor is not None and maior_score > 0:
-
-            pedidos_usados.add(melhor["cod_pedido"])
-            
-            resultado.append({
-                "COD NF": nf["cod_nf"],
-                "COD PEDIDO": melhor["cod_pedido"],
-                "DESCRIÇÃO": melhor["descricao_pedido"],
-                "QTD": nf["qtd"],
-                "UNITÁRIO": nf["unit"],
-                "TOTAL": nf["total"],
-                "STATUS": f"{round(maior_score)}%"
-            })
-
-    df_resultado = pd.DataFrame(resultado)
-
-    st.write("Amarrações encontradas:", len(df_resultado))
-
-    st.subheader("Resultado da Amarração")
-
-    st.dataframe(
-        df_resultado,
-        use_container_width=True
-    )
-
-    output = BytesIO()
-
-    with pd.ExcelWriter(output, engine="openpyxl") as writer:
-        df_resultado.to_excel(
-            writer,
-            index=False,
-            sheet_name="Amarracao"
-        )
-
-    excel_data = output.getvalue()
-
 
             pedidos_usados.add(melhor["cod_pedido"])
             
