@@ -165,10 +165,6 @@ if nf_file and pedido_file:
 
     st.write("Iniciando amarração...")
 
-    pedidos_usados = set()    
-       
-    st.write("Iniciando amarração...")
-
     for _, nf in df_nf.iterrows():
 
         melhor = None
@@ -197,15 +193,17 @@ if nf_file and pedido_file:
             similaridade = fuzz.token_sort_ratio(
                 str(nf["descricao_nf"]),
                 str(ped["descricao_pedido"])
-                st.write(
-                    nf["descricao_nf"],
-                    " --> ",
-                    ped["descricao_pedido"],
-                    " = ",
-                    similaridade
-                )
             )
 
+            st.write(
+                nf["descricao_nf"],
+                " --> ",
+                ped["descricao_pedido"],
+                " = ",
+                similaridade
+            )
+
+score += similaridade * 0.2
             score += similaridade * 0.2
 
             if score > maior_score:
